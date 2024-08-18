@@ -1,0 +1,52 @@
+pipeline {
+    agent any
+
+    environment {
+        NODE_VERSION = '16.x'
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                // Replace 'checkout scm' with 'git' to pull the code from the repository
+                git url: 'https://your-repo-url.git', branch: 'main'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                script {
+                    sh 'nvm install ${NODE_VERSION}'
+                    sh 'npm install'
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'npm test'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'npm run build'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'npm run deploy'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
+}
